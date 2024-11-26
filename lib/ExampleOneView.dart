@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project/provider/ExampleOneProvider.dart';
+import 'package:provider/provider.dart';
 
 class Exampleoneview extends StatefulWidget {
   const Exampleoneview({super.key});
@@ -8,9 +10,10 @@ class Exampleoneview extends StatefulWidget {
 }
 
 class _ExampleoneviewState extends State<Exampleoneview> {
-  double value = 1.0;
   @override
   Widget build(BuildContext context) {
+    final sliderProvider =
+        Provider.of<Exampleoneprovider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -18,40 +21,55 @@ class _ExampleoneviewState extends State<Exampleoneview> {
         title: const Text("Provider"),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Slider(value: value, onChanged: (val) {}),
-          Container(
-           
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.blueGrey,
-                    ),
-                    child: Text(
-                      "Container 1",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20, color: Colors.grey[400]),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.blueGrey,
-                    ),
-                    child: Text(
-                      "Container 2",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20, color: Colors.grey[400]),
-                    ),
-                  ),
-                )
-              ],
-            ),
+          Consumer<Exampleoneprovider>(
+            builder: (context, value, child) {
+              return Slider(
+                min: 0,
+                max: 1,
+                value: value.value,
+                onChanged: (val) {
+                  value.setValue(val);
+                },
+              );
+            },
           ),
+          Consumer<Exampleoneprovider>(
+            builder: (context, value, child) {
+              return Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color:
+                            Colors.blueGrey.withOpacity(value.value),
+                      ),
+                      child: const Text(
+                        "Container 1",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 20, color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.amber.withOpacity(value.value),
+                      ),
+                      child: const Text(
+                        "Container 2",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 20, color: Colors.grey),
+                      ),
+                    ),
+                  )
+                ],
+              );
+            },
+          )
         ],
       ),
     );
