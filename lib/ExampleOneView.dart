@@ -43,8 +43,7 @@ class _ExampleoneviewState extends State<Exampleoneview> {
                     child: Container(
                       height: 60,
                       decoration: BoxDecoration(
-                        color:
-                            Colors.blueGrey.withOpacity(value.value),
+                        color: Colors.blueGrey.withOpacity(value.value),
                       ),
                       child: const Text(
                         "Container 1",
