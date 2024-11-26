@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project/CountProviderExample.dart';
-// import 'package:project/CountProviderExample.dart';
-import 'package:project/ExampleOneView.dart';
 import 'package:project/ThemeProviderView.dart';
 import 'package:project/provider/CountProvider.dart';
 import 'package:project/provider/ExampleOneProvider.dart';
