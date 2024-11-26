@@ -16,25 +16,21 @@ class _ThemeproviderviewState extends State<Themeproviderview> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Light And Dark Theme"),
+        title: const Text("Light And Dark Theme"),
       ),
       body: Column(
         children: [
           RadioListTile(
-              title: const Text("Light Mode"),
+              title: const Text("Light Mode",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25)),
               value: ThemeMode.light,
               groupValue: themeChanger.themeMode,
               onChanged: themeChanger.setTheme),
           RadioListTile(
-              title: const Text("Dark Mode"),
+              title: const Text("Dark Mode",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25),),
               value: ThemeMode.dark,
               groupValue: themeChanger.themeMode,
               onChanged: themeChanger.setTheme),
-          RadioListTile(
-              title: const Text("System Mode"),
-              value: ThemeMode.light,
-              groupValue: themeChanger.themeMode,
-              onChanged: themeChanger.setTheme),
+        
         ],
       ),
     );
