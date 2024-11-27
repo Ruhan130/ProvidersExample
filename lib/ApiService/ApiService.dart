@@ -1,8 +1,6 @@
-import 'dart:convert';
-
+// import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:project/Model/getApiModel.dart';
-
 
 class Apiservice {
  getApiModel demo = getApiModel();
@@ -12,7 +10,6 @@ class Apiservice {
 
     if(response.statusCode == 200 || response.statusCode == 201){
       apiData = demo.toJson();
-
     }else{
       print("Error");
     }
