@@ -12,6 +12,7 @@ class Exampleoneview extends StatefulWidget {
 class _ExampleoneviewState extends State<Exampleoneview> {
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final sliderProvider =
         Provider.of<Exampleoneprovider>(context, listen: false);
     return Scaffold(
