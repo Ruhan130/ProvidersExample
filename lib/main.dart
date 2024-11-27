@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:project/CountProviderExample.dart';
 import 'package:project/ThemeProviderView.dart';
 import 'package:project/provider/CountProvider.dart';
 import 'package:project/provider/ExampleOneProvider.dart';
@@ -37,11 +36,14 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               brightness: Brightness.light,
               primarySwatch: Colors.blue,
-              appBarTheme: AppBarTheme(backgroundColor: Colors.amber),
+               primaryColor: Colors.black,
+              appBarTheme: const AppBarTheme(backgroundColor: Colors.amber),
             ),
             darkTheme: ThemeData(
               brightness: Brightness.dark,
-              appBarTheme: AppBarTheme(backgroundColor: Colors.teal),
+              primaryColor: Colors.white,
+              primarySwatch: Colors.blue, 
+              appBarTheme: const AppBarTheme(backgroundColor: Colors.teal),
             ),
             home: const Themeproviderview(),
           );
