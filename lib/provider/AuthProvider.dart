@@ -1,7 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:project/ApiService/ApiService.dart';
 
 class Authprovider with ChangeNotifier {
+  dynamic apiResponse;
+  //  GET APII
+  bool isloading = true;
+  getData()async{
+    await Apiservice().getData().then((onValue){
+      apiResponse = onValue;
+      print(onValue);
+
+    }).onError((error, stackTrace) {
+      print(error.toString());
+    },);
+    isloading = false;
+    notifyListeners();
+  } 
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  //  POST API 
   bool _loading = false;
   bool get loading => _loading;
   setLoading(bool value) {

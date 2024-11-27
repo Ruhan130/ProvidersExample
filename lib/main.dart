@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:project/ApiCallUsingProvider/LoginWithRestApi.dart';
-import 'package:project/lightAndDarkTheme/ThemeProviderView.dart';
 import 'package:project/provider/AuthProvider.dart';
 import 'package:project/provider/CountProvider.dart';
 import 'package:project/provider/ExampleOneProvider.dart';
