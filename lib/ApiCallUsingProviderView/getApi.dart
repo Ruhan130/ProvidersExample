@@ -36,8 +36,11 @@ class _GetapiState extends State<Getapi> {
             itemCount: Provider.of<Authprovider>(context).apiResponse['data'].length,
               itemBuilder: (icontext, index) {
                 return ListTile(
-                  title: Provider.of<Authprovider>(context).apiResponse['data'][index]['avatar'.toString()],
-                  subtitle: Provider.of<Authprovider>(context).apiResponse['data'][index]['email'.toString()],
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(Provider.of<Authprovider>(context).apiResponse['data'][index]['avatar']),
+                  ),
+                  title: Text(Provider.of<Authprovider>(context).apiResponse['data'][index]['first_name'].toString()) ,
+                  subtitle: Text(Provider.of<Authprovider>(context).apiResponse['data'][index]['email'].toString()),
                 );
               },
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/ApiCallUsingProviderView/LoginWithRestApi.dart';
+import 'package:project/ApiCallUsingProviderView/getApi.dart';
 import 'package:project/provider/AuthProvider.dart';
 import 'package:project/provider/CountProvider.dart';
 import 'package:project/provider/ExampleOneProvider.dart';
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.blue, 
               appBarTheme: const AppBarTheme(backgroundColor: Colors.teal),
             ),
-            home: const Loginwithrestapi(),
+            home: const Getapi(),
           );
         }));
   }
