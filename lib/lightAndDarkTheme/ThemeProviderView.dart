@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project/ScreenOne.dart';
-import 'package:project/provider/themeProvider.dart';
+import 'package:project/lightAndDarkTheme/ScreenOne.dart';
+import 'package:project/lightAndDarkTheme/themeProvider.dart';
 import 'package:provider/provider.dart';
 
 class Themeproviderview extends StatefulWidget {

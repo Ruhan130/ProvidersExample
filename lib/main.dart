@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:project/ThemeProviderView.dart';
+import 'package:project/lightAndDarkTheme/ThemeProviderView.dart';
+import 'package:project/provider/AuthProvider.dart';
 import 'package:project/provider/CountProvider.dart';
 import 'package:project/provider/ExampleOneProvider.dart';
-import 'package:project/provider/themeProvider.dart';
+import 'package:project/lightAndDarkTheme/themeProvider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             create: (_) => ThemeChanger(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => Authprovider(),
           ),
         ],
         child: Builder(builder: (BuildContext context) {

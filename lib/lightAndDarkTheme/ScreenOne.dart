@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project/ScreenTwo.dart';
+import 'package:project/lightAndDarkTheme/ScreenTwo.dart';
 
 class Screenone extends StatefulWidget {
   const Screenone({super.key});
