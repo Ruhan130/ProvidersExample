@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:project/ApiService/ApiService.dart';
+import 'package:project/Model/getApiModel.dart';
 
 class Authprovider with ChangeNotifier {
-  dynamic apiResponse;
-  //  GET APII
-  bool isloading = true;
-  getData()async{
-    await Apiservice().getData().then((onValue){
-      apiResponse = onValue;
-      print(onValue);
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
-    }).onError((error, stackTrace) {
-      print(error.toString());
-    },);
-    isloading = false;
+  getApiModel? _apiResponse;
+  getApiModel? get apiResponse => _apiResponse;
+
+  Future<void> getData() async {
+    _isLoading = true;
     notifyListeners();
-  } 
 
+    try {
+      _apiResponse = await ApiService().getData();
+    } catch (e) {
+      print('Error fetching data: $e');
+      _apiResponse = null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
   
   
   

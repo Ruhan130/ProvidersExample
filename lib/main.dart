@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.blue, 
               appBarTheme: const AppBarTheme(backgroundColor: Colors.teal),
             ),
-            home: const Getapi(),
+            home: const GetApi(),
           );
         }));
   }

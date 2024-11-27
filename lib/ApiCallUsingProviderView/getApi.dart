@@ -2,48 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:project/provider/AuthProvider.dart';
 import 'package:provider/provider.dart';
 
-class Getapi extends StatefulWidget {
-  const Getapi({super.key});
+class GetApi extends StatefulWidget {
+  const GetApi({Key? key}) : super(key: key);
 
   @override
-  State<Getapi> createState() => _GetapiState();
+  State<GetApi> createState() => _GetApiState();
 }
 
-class _GetapiState extends State<Getapi> {
+class _GetApiState extends State<GetApi> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<Authprovider>(context, listen: false).getData();
     });
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<Authprovider>(context);
+    final apiResponse = authProvider.apiResponse;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
         centerTitle: true,
-        title: Text("Get Api"),
+        title: const Text("Get API"),
       ),
-      body: Provider.of<Authprovider>(context).isloading
+      body: authProvider.isLoading
           ? const Center(
               child: CircularProgressIndicator(
                 color: Colors.grey,
               ),
             )
-          : ListView.builder(
-            itemCount: Provider.of<Authprovider>(context).apiResponse['data'].length,
-              itemBuilder: (icontext, index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(Provider.of<Authprovider>(context).apiResponse['data'][index]['avatar']),
-                  ),
-                  title: Text(Provider.of<Authprovider>(context).apiResponse['data'][index]['first_name'].toString()) ,
-                  subtitle: Text(Provider.of<Authprovider>(context).apiResponse['data'][index]['email'].toString()),
-                );
-              },
-            ),
+          : apiResponse == null || apiResponse.data == null
+              ? const Center(
+                  child: Text('Failed to load data.'),
+                )
+              : ListView.builder(
+                  itemCount: apiResponse.data?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    final user = apiResponse.data![index];
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(user.avatar ?? ''),
+                      ),
+                      title: Text(user.firstName ?? 'No Name'),
+                      subtitle: Text(user.email ?? 'No Email'),
+                    );
+                  },
+                ),
     );
   }
 }
