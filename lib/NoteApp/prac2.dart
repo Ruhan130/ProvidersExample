@@ -7,8 +7,14 @@ class NoteScreen1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+    
       appBar: AppBar(
-        title: Text('Dynamic Notes with Provider'),
+        backgroundColor: Colors.black,
+        centerTitle: true,
+        title: Text(
+          'Note App',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Column(
         children: [
@@ -27,13 +33,20 @@ class NoteScreen1 extends StatelessWidget {
                             noteProvider.toggleCheckbox(index);
                           },
                         ),
+                        SizedBox(
+                          width: 20,
+                        ),
                         Expanded(
                           child: TextField(
                             controller: TextEditingController(text: note.text),
-                            decoration: const InputDecoration(
-                              hintText: 'Enter note...',
-                              border: OutlineInputBorder(),
-                            ),
+                            decoration: InputDecoration(
+                                hintText: 'Enter note...',
+                                hintStyle: TextStyle(
+                                    decoration: note.isChecked
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none,
+                                    ),
+                                border: InputBorder.none),
                             onChanged: (newText) {
                               noteProvider.updateNoteText(index, newText);
                             },
@@ -50,7 +63,8 @@ class NoteScreen1 extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: () {
-                Provider.of<ExampleNoteProvider>(context, listen: false).addNote();
+                Provider.of<ExampleNoteProvider>(context, listen: false)
+                    .addNote();
               },
               child: Text('Add Note'),
             ),
