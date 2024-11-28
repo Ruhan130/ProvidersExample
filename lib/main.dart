@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:project/ExampleOneView.dart';
 import 'package:project/NoteApp/NoteAppScreen.dart';
+import 'package:project/NoteApp/NoteProvider.dart';
+import 'package:project/NoteApp/prac';
+import 'package:project/NoteApp/prac2.dart';
 
 import 'package:project/provider/ExampleOneProvider.dart';
 import 'package:project/provider/NoteProvider.dart';
@@ -21,16 +24,20 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
             create: (_) => Exampleoneprovider(),
           ),
-            ChangeNotifierProvider(
-            create: (_) =>Noteprovider(),
+          //   ChangeNotifierProvider(
+          //   create: (_) =>Noteprovider(),
+          // ),
+           ChangeNotifierProvider(
+            create: (_) =>ExampleNoteProvider(),
           ),
+          
           
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData(),
-          home:   NoteappView(),
+          home:   NoteScreen1(),
         ));
   }
 }

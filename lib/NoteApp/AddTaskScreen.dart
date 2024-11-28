@@ -1,41 +1,75 @@
 import 'package:flutter/material.dart';
-import 'package:project/Model/Note.dart';
-import 'package:project/NoteApp/NoteAppScreen.dart';
-import 'package:project/main.dart';
-import 'package:project/provider/NoteProvider.dart';
-import 'package:provider/provider.dart';
 
-class Addtaskscreen extends StatelessWidget {
-  Addtaskscreen({super.key});
+class NoteScreen extends StatefulWidget {
+  @override
+  _NoteScreenState createState() => _NoteScreenState();
+}
 
-  final controller = TextEditingController();
+class _NoteScreenState extends State<NoteScreen> {
+  final List<Widget> _noteItems = [];
+  final TextEditingController _controller = TextEditingController();
+
+  void _addNewLine() {
+    setState(() {
+      _noteItems.add(
+        Row(
+          children: [
+            Checkbox(
+              value: false,
+              onChanged: (value) {
+                // Handle checkbox toggle
+              },
+            ),
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Enter text here...',
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Task Screen"),
+        title: Text('Note App'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: controller,
-              decoration: InputDecoration(hintText: "Enter Jo dil karay"),
+            Row(
+              children: [
+                Checkbox(
+                  value: false,
+                  onChanged: (value) {
+                    // Handle checkbox toggle
+                  },
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      hintText: 'Enter your first note...',
+                    ),
+                    onSubmitted: (value) {
+                      _controller.clear();
+                      _addNewLine();
+                    },
+                  ),
+                ),
+              ],
             ),
-            SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                 if (controller.text.isNotEmpty) {
-                context.read<Noteprovider>().addTask(
-                  Note(tittle: controller.text)
-                );
-              }
-                controller.clear(); // Clear the text field after adding the task
-              },
-              child: Text("ADd"),
+            Expanded(
+              child: ListView(
+                children: _noteItems,
+              ),
             ),
           ],
         ),

@@ -43,7 +43,7 @@ class _NoteappViewState extends State<NoteappView> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => Addtaskscreen(),
+              builder: (context) => NoteScreen(),
             ),
           );
 

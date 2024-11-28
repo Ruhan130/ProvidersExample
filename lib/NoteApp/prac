@@ -1,0 +1,129 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => NoteProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: NoteScreen(),
+    );
+  }
+}
+
+// ChangeNotifier to manage state
+class NoteProvider extends ChangeNotifier {
+  List<NoteItem> _notes = [];
+
+  List<NoteItem> get notes => _notes;
+
+  void addNote(String text) {
+    _notes.add(NoteItem(text: text, isChecked: false));
+    notifyListeners();
+  }
+
+  void toggleCheckbox(int index) {
+    _notes[index].isChecked = !_notes[index].isChecked;
+    notifyListeners();
+  }
+}
+
+// Model class for a NoteItem
+class NoteItem {
+  String text;
+  bool isChecked;
+
+  NoteItem({required this.text, this.isChecked = false});
+}
+
+// NoteScreen UI
+class NoteScreen extends StatelessWidget {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Note App with Provider'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Checkbox(
+                  value: false,
+                  onChanged: (value) {
+                    // Checkbox for first row, no action needed
+                  },
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      hintText: 'Enter your first note...',
+                    ),
+                    onSubmitted: (value) {
+                      if (value.isNotEmpty) {
+                        Provider.of<NoteProvider>(context, listen: false)
+                            .addNote(value);
+                        _controller.clear();
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: Consumer<NoteProvider>(
+                builder: (context, noteProvider, child) {
+                  return ListView.builder(
+                    itemCount: noteProvider.notes.length,
+                    itemBuilder: (context, index) {
+                      final note = noteProvider.notes[index];
+                      return Row(
+                        children: [
+                          Checkbox(
+                            value: note.isChecked,
+                            onChanged: (value) {
+                              noteProvider.toggleCheckbox(index);
+                            },
+                          ),
+                          Expanded(
+                            child: TextField(
+                              controller: TextEditingController(
+                                  text: note.text), // Set the initial value
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                              onChanged: (newText) {
+                                // Update note text if required
+                                note.text = newText;
+                                // Optional: notifyListeners();
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
