@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/ExampleOneView.dart';
-import 'package:project/provider/CountProvider.dart';
+import 'package:project/NoteApp/NoteAppScreen.dart';
+
 import 'package:project/provider/ExampleOneProvider.dart';
 import 'package:project/provider/NoteProvider.dart';
 import 'package:provider/provider.dart';
@@ -18,20 +19,18 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (_) => Countprovider(),
-          ),
-          ChangeNotifierProvider(
             create: (_) => Exampleoneprovider(),
           ),
             ChangeNotifierProvider(
-            create: (_) => Noteprovider(),
+            create: (_) =>Noteprovider(),
           ),
+          
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData(),
-          home:  const  Exampleoneview(),
+          home:   NoteappView(),
         ));
   }
 }
