@@ -4,6 +4,5 @@ class Note {
   Note({
     required this.tittle,
   });
-
   
 }

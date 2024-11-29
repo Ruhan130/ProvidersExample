@@ -20,7 +20,7 @@ class _NoteScreenState extends State<NoteScreen> {
                 // Handle checkbox toggle
               },
             ),
-            Expanded(
+            const Expanded(
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Enter text here...',
@@ -36,6 +36,7 @@ class _NoteScreenState extends State<NoteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    FocusNode FieldOne = FocusNode();
     return Scaffold(
       appBar: AppBar(
         title: Text('Note App'),
@@ -53,15 +54,23 @@ class _NoteScreenState extends State<NoteScreen> {
                   },
                 ),
                 Expanded(
-                  child: TextField(
+                  child: TextFormField(
                     controller: _controller,
+                    focusNode: FieldOne,
+                    onEditingComplete: () {
+                      
+                    },
+                    textDirection: TextDirection.ltr,
                     decoration: InputDecoration(
                       hintText: 'Enter your first note...',
                     ),
-                    onSubmitted: (value) {
+                    onFieldSubmitted: (value) {
+                      // Clear the text field on submit
                       _controller.clear();
                       _addNewLine();
+                     
                     },
+                    
                   ),
                 ),
               ],

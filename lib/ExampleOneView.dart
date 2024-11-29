@@ -12,8 +12,7 @@ class Exampleoneview extends StatefulWidget {
 class _ExampleoneviewState extends State<Exampleoneview> {
   @override
   Widget build(BuildContext context) {
-    final sliderProvider =
-        Provider.of<Exampleoneprovider>(context, listen: false);
+    Provider.of<Exampleoneprovider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

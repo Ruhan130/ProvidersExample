@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:project/NoteApp/NoteProvider.dart';
-import 'package:project/NoteApp/prac';
+// import 'package:project/NoteApp/prac';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class NoteScreen1 extends StatelessWidget {
+    FocusNode firstField = FocusNode();
   @override
   Widget build(BuildContext context) {
+  
     return Scaffold(
     
       appBar: AppBar(
@@ -37,8 +40,13 @@ class NoteScreen1 extends StatelessWidget {
                           width: 20,
                         ),
                         Expanded(
-                          child: TextField(
+                          child:  TextFormField(
                             controller: TextEditingController(text: note.text),
+                            textDirection: TextDirection.ltr,
+                            focusNode: firstField,
+                            onFieldSubmitted: (value){
+                              FocusScope.of(context).requestFocus(firstField);
+                            },
                             decoration: InputDecoration(
                                 hintText: 'Enter note...',
                                 hintStyle: TextStyle(
