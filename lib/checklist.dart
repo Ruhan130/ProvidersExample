@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:project/check.dart';
 import 'package:provider/provider.dart';
 
@@ -51,29 +52,43 @@ class DynamicTextFieldScreen extends StatelessWidget {
                               },
                             ),
                             Expanded(
-                              child: TextField(
-                                controller: textFieldProvider.controllers[index],
-                                autofocus: index == textFieldProvider.controllers.length - 1,
-                                enabled: !textFieldProvider.checkboxes[index], // Disable text field if checkbox is checked
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: 'Enter text here...',
-                                ),
-                                style: TextStyle(
-                                  color: textFieldProvider.checkboxes[index]
-                                      ? Colors.grey
-                                      : Colors.black,
-                                ),
-                                onChanged: (value) {
-                                  // Automatically add a new field on Enter
-                                  if (value.endsWith('\n')) {
-                                    textFieldProvider.addNewTextField();
+                              // ignore: deprecated_member_use
+                              child: RawKeyboardListener(
+                                focusNode: FocusNode(),
+                                // ignore: deprecated_member_use
+                                onKey: (RawKeyEvent event) {
+                                  // Check if the backspace key is pressed
+                                  // ignore: deprecated_member_use
+                                  if (event.isKeyPressed(LogicalKeyboardKey.backspace) &&
+                                      textFieldProvider.controllers[index].text.isEmpty &&
+                                      textFieldProvider.controllers.length > 1) {
+                                    textFieldProvider.removeTextField(index);
                                   }
                                 },
-                                onSubmitted: (value) {
-                                  textFieldProvider.addNewTextField();
-                                },
-                                textInputAction: TextInputAction.newline,
+                                child: TextField(
+                                  controller: textFieldProvider.controllers[index],
+                                  autofocus: index ==  textFieldProvider.controllers.length  - 1 ,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: 'Enter text here...',
+                                  ),
+                                  style: TextStyle(
+                                    color: textFieldProvider.checkboxes[index]
+                                        ? Colors.grey
+                                        : Colors.black,
+                                  ),
+                                  onChanged: (value) {
+                                    // Automatically add a new field on Enter
+                                    if (value.endsWith('\n')) {
+                                      textFieldProvider.addNewTextField();
+                                    }
+                                    
+                                  },
+                                  onSubmitted: (value) {
+                                    textFieldProvider.addNewTextField();
+                                  },
+                                  textInputAction: TextInputAction.newline,
+                                ),
                               ),
                             ),
                           ],
