@@ -28,7 +28,6 @@ class DynamicTextFieldScreen extends StatelessWidget {
                     textFieldProvider.controllers[index].text,
                     const TextStyle(fontSize: 16),
                   );
-
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Stack(
@@ -57,7 +56,7 @@ class DynamicTextFieldScreen extends StatelessWidget {
                               child: RawKeyboardListener(
                                 focusNode: FocusNode(),
                                 // ignore: deprecated_member_use
-                                onKey: (RawKeyEvent event) {
+                                onKey: (RawKeyEvent event)  {
                                   // Check if the backspace key is pressed
                                   // ignore: deprecated_member_use
                                   if (event.isKeyPressed(LogicalKeyboardKey.backspace) &&
