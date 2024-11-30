@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:project/check.dart';
 import 'package:provider/provider.dart';
 
@@ -49,27 +50,56 @@ class DynamicTextFieldScreen extends StatelessWidget {
                               },
                             ),
                             Expanded(
-                              child: TextField(
-                                controller: textFieldProvider.controllers[index],
-                                autofocus: index == textFieldProvider.controllers.length - 1,
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: 'Enter text here...',
-                                ),
-                                style: TextStyle(
-                                  color: textFieldProvider.checkboxes[index]
-                                      ? Colors.grey
-                                      : Colors.black,
-                                ),
-                                onChanged: (value) {
-                                  // If the text field is empty and backspace is pressed, remove it
-                                  if (value.isEmpty && textFieldProvider.controllers.length > 1) {
+                              child: RawKeyboardListener(
+                                focusNode: textFieldProvider.focusNodes[index],
+                                onKey: (RawKeyEvent event) {
+                                  // Backspace pressed, remove text field if it's empty
+                                  if (event.isKeyPressed(LogicalKeyboardKey.backspace) &&
+                                      textFieldProvider.controllers[index].text.isEmpty &&
+                                      textFieldProvider.controllers.length > 1) {
+                                    // Remove text field and shift focus
                                     textFieldProvider.removeTextField(index);
+
+                                    // Shift focus to the previous field if possible
+                                    if (index > 0) {
+                                      FocusScope.of(context).requestFocus(
+                                        textFieldProvider.focusNodes[index - 1],
+                                      );
+                                    } else if (index == 0 && textFieldProvider.controllers.isNotEmpty) {
+                                      FocusScope.of(context).requestFocus(
+                                        textFieldProvider.focusNodes.first,
+                                      );
+                                    }
                                   }
                                 },
-                                onSubmitted: (value) {
-                                  textFieldProvider.addNewTextField();
-                                },
+                                child: TextField(
+                                  controller: textFieldProvider.controllers[index],
+                                  autofocus: index == textFieldProvider.controllers.length - 1,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: 'Enter text here...',
+                                  ),
+                                  style: TextStyle(
+                                    color: textFieldProvider.checkboxes[index]
+                                        ? Colors.grey
+                                        : Colors.black,
+                                  ),
+                                  onChanged: (value) {
+                                    if (value.endsWith('\n')) {
+                                      textFieldProvider.addNewTextField();
+                                      FocusScope.of(context).requestFocus(
+                                        textFieldProvider.focusNodes.last,
+                                      );
+                                    }
+                                  },
+                                  onSubmitted: (value) {
+                                    textFieldProvider.addNewTextField();
+                                    FocusScope.of(context).requestFocus(
+                                      textFieldProvider.focusNodes.last,
+                                    );
+                                  },
+                                  textInputAction: TextInputAction.newline,
+                                ),
                               ),
                             ),
                           ],

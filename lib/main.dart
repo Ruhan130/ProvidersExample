@@ -31,14 +31,14 @@ class MyApp extends StatelessWidget {
           title: 'Flutter Demo',
           theme: ThemeData(),
           home: GestureDetector(
-            // onTap: (){
-            //   FocusScopeNode currentNode = FocusScope.of(context);
-            //   if(currentNode.focusedChild != null && !currentNode.hasPrimaryFocus){
-            //     FocusManager.instance.primaryFocus!.unfocus();
-            //   }
-            // },
+            onTap: (){
+              FocusScopeNode currentNode = FocusScope.of(context);
+              if(currentNode.focusedChild != null && !currentNode.hasPrimaryFocus){
+                FocusManager.instance.primaryFocus!.unfocus();
+              }
+            },
             child: DynamicTextFieldScreen(),
           ),
-        ));
+        ),);
   }
 }
