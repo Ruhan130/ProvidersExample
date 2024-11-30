@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project/provider/ExampleOneProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:project/provider/ExampleOneProvider.dart';
 
 class Exampleoneview extends StatefulWidget {
   const Exampleoneview({super.key});

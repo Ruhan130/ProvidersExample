@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:project/check.dart';
 import 'package:provider/provider.dart';
 
 class DynamicTextFieldScreen extends StatelessWidget {
+  const DynamicTextFieldScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final textFieldProvider = Provider.of<TextFieldProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dynamic Text Fields with Checkbox'),
+        title: const Text('Dynamic Text Fields with Checkbox'),
         backgroundColor: Colors.black,
       ),
       body: Padding(
@@ -23,7 +24,7 @@ class DynamicTextFieldScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final textWidth = _getTextWidth(
                     textFieldProvider.controllers[index].text,
-                    TextStyle(fontSize: 16),
+                    const TextStyle(fontSize: 16),
                   );
 
                   return Padding(
@@ -50,56 +51,29 @@ class DynamicTextFieldScreen extends StatelessWidget {
                               },
                             ),
                             Expanded(
-                              child: RawKeyboardListener(
-                                focusNode: textFieldProvider.focusNodes[index],
-                                onKey: (RawKeyEvent event) {
-                                  // Backspace pressed, remove text field if it's empty
-                                  if (event.isKeyPressed(LogicalKeyboardKey.backspace) &&
-                                      textFieldProvider.controllers[index].text.isEmpty &&
-                                      textFieldProvider.controllers.length > 1) {
-                                    // Remove text field and shift focus
-                                    textFieldProvider.removeTextField(index);
-
-                                    // Shift focus to the previous field if possible
-                                    if (index > 0) {
-                                      FocusScope.of(context).requestFocus(
-                                        textFieldProvider.focusNodes[index - 1],
-                                      );
-                                    } else if (index == 0 && textFieldProvider.controllers.isNotEmpty) {
-                                      FocusScope.of(context).requestFocus(
-                                        textFieldProvider.focusNodes.first,
-                                      );
-                                    }
+                              child: TextField(
+                                controller: textFieldProvider.controllers[index],
+                                autofocus: index == textFieldProvider.controllers.length - 1,
+                                enabled: !textFieldProvider.checkboxes[index], // Disable text field if checkbox is checked
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Enter text here...',
+                                ),
+                                style: TextStyle(
+                                  color: textFieldProvider.checkboxes[index]
+                                      ? Colors.grey
+                                      : Colors.black,
+                                ),
+                                onChanged: (value) {
+                                  // Automatically add a new field on Enter
+                                  if (value.endsWith('\n')) {
+                                    textFieldProvider.addNewTextField();
                                   }
                                 },
-                                child: TextField(
-                                  controller: textFieldProvider.controllers[index],
-                                  autofocus: index == textFieldProvider.controllers.length - 1,
-                                  decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: 'Enter text here...',
-                                  ),
-                                  style: TextStyle(
-                                    color: textFieldProvider.checkboxes[index]
-                                        ? Colors.grey
-                                        : Colors.black,
-                                  ),
-                                  onChanged: (value) {
-                                    if (value.endsWith('\n')) {
-                                      textFieldProvider.addNewTextField();
-                                      FocusScope.of(context).requestFocus(
-                                        textFieldProvider.focusNodes.last,
-                                      );
-                                    }
-                                  },
-                                  onSubmitted: (value) {
-                                    textFieldProvider.addNewTextField();
-                                    FocusScope.of(context).requestFocus(
-                                      textFieldProvider.focusNodes.last,
-                                    );
-                                  },
-                                  textInputAction: TextInputAction.newline,
-                                ),
+                                onSubmitted: (value) {
+                                  textFieldProvider.addNewTextField();
+                                },
+                                textInputAction: TextInputAction.newline,
                               ),
                             ),
                           ],

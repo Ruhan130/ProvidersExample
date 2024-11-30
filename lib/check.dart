@@ -2,22 +2,17 @@ import 'package:flutter/material.dart';
 
 class TextFieldProvider with ChangeNotifier {
   List<TextEditingController> _controllers = [TextEditingController()];
-  List<FocusNode> _focusNodes = [FocusNode()];
   List<bool> _checkboxes = [false];
 
   List<TextEditingController> get controllers => _controllers;
-  List<FocusNode> get focusNodes => _focusNodes;
   List<bool> get checkboxes => _checkboxes;
 
-  // Method to add a new text field
   void addNewTextField() {
     _controllers.add(TextEditingController());
-    _focusNodes.add(FocusNode());
     _checkboxes.add(false);
     notifyListeners();
   }
 
-  // Method to update the checkbox state
   void updateCheckbox(int index, bool value) {
     _checkboxes[index] = value;
     notifyListeners();
@@ -26,10 +21,7 @@ class TextFieldProvider with ChangeNotifier {
   // Method to remove a text field when it becomes empty
   void removeTextField(int index) {
     if (_controllers.length > 1) {
-      _controllers[index].dispose();
-      _focusNodes[index].dispose();
       _controllers.removeAt(index);
-      _focusNodes.removeAt(index);
       _checkboxes.removeAt(index);
       notifyListeners();
     }

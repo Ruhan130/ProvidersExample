@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project/Model/Note.dart';
 import 'package:project/NoteApp/AddTaskScreen.dart';
 import 'package:project/provider/NoteProvider.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +47,7 @@ class _NoteappViewState extends State<NoteappView> {
           );
 
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

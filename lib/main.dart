@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:project/NoteApp/NoteProvider.dart';
-import 'package:project/NoteApp/prac2.dart';
 import 'package:project/check.dart';
 import 'package:project/checklist.dart';
 import 'package:project/provider/ExampleOneProvider.dart';
@@ -37,8 +36,8 @@ class MyApp extends StatelessWidget {
                 FocusManager.instance.primaryFocus!.unfocus();
               }
             },
-            child: DynamicTextFieldScreen(),
+            child:  DynamicTextFieldScreen(),
           ),
-        ),);
+        ));
   }
 }
