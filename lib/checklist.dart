@@ -12,8 +12,9 @@ class DynamicTextFieldScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dynamic Text Fields with Checkbox'),
-        backgroundColor: Colors.black,
+        centerTitle: true,
+        title: const Text('Notee App'),
+        backgroundColor: Colors.teal,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

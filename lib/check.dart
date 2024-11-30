@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TextFieldProvider with ChangeNotifier {
+ 
   List<TextEditingController> _controllers = [TextEditingController()];
   List<bool> _checkboxes = [false];
 
@@ -20,7 +21,7 @@ class TextFieldProvider with ChangeNotifier {
 
   // Method to remove a text field when it becomes empty
   void removeTextField(int index) {
-    if (_controllers.length > 1) {
+    if (_controllers.length >1) {
       _controllers.removeAt(index);
       _checkboxes.removeAt(index);
       notifyListeners();
