@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project/NoteApp/View/imagePicker.dart';
+import 'package:project/NoteApp/View/NoteAppView.dart';
+
 
 import 'package:project/NoteApp/provider/NoteAppProvider.dart';
 import 'package:project/provider/ExampleOneProvider.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
                 FocusManager.instance.primaryFocus!.unfocus();
               }
             },
-            child:  ImagePickerView(),
+            child:  DynamicTextFieldScreen(),
           )),
     );
   }
