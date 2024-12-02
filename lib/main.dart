@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project/NoteApp/View/imagePicker.dart';
 
 import 'package:project/NoteApp/provider/NoteAppProvider.dart';
 import 'package:project/NoteApp/View/NoteAppView.dart';
