@@ -11,13 +11,21 @@ class Imagpickerview extends StatefulWidget {
 }
 
 class _ImagpickerviewState extends State<Imagpickerview> {
-  File? image ;
+  File? image;
   final picker = ImagePicker();
-   
+
+  Future getImage() async {
+    final pickerImage =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+        setState(() {
+          if(pickerImage != null){
+            image = File(pickerImage.path);
+          }
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
-    );
+    return Scaffold();
   }
 }
