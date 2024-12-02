@@ -1,0 +1,7 @@
+com.example.project-pngs-0 D:\Provider\project\android\build\generated\res\pngs\debug
+com.example.project-resValues-1 D:\Provider\project\android\build\generated\res\resValues\debug
+com.example.project-packageDebugResources-2 D:\Provider\project\android\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.project-packageDebugResources-3 D:\Provider\project\android\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.project-merged_res-4 D:\Provider\project\android\build\intermediates\merged_res\debug
+com.example.project-debug-5 D:\Provider\project\android\src\debug\res
+com.example.project-main-6 D:\Provider\project\android\src\main\res
