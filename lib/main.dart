@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:project/NoteApp/provider/NoteAppProvider.dart';
-import 'package:project/NoteApp/NoteAppView.dart';
+import 'package:project/NoteApp/View/NoteAppView.dart';
 import 'package:project/provider/ExampleOneProvider.dart';
 import 'package:provider/provider.dart';
 
