@@ -14,18 +14,36 @@ class _ImagpickerviewState extends State<Imagpickerview> {
   File? image;
   final picker = ImagePicker();
 
-  Future getImage() async {
+  Future getImageGallery() async {
     final pickerImage =
         await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-        setState(() {
-          if(pickerImage != null){
-            image = File(pickerImage.path);
-          }
-        });
+    setState(() {
+      if (pickerImage != null) {
+        image = File(pickerImage.path);
+      } else {
+        print("No Image picked");
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: Center(
+        child: InkWell(
+          onTap: getImageGallery,
+          child: Container(
+            height: 300,
+            width: 300,
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+            child: image != null
+                ? Image.file(image!.absolute)
+                : Center(
+                    child: Icon(Icons.add_photo_alternate,size: 30,),
+                  ),
+          ),
+        ),
+      ),
+    );
   }
 }
