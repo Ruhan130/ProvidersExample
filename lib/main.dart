@@ -14,30 +14,31 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (_) => Exampleoneprovider(),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => ExampleNoteProvider(),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => TextFieldProvider(),
-          ),
-        ],
-        child: MaterialApp(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => Exampleoneprovider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ExampleNoteProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => TextFieldProvider(),
+        ),
+      ],
+      child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData(),
           home: GestureDetector(
-            onTap: (){
+            onTap: () {
               FocusScopeNode currentNode = FocusScope.of(context);
-              if(currentNode.focusedChild != null && !currentNode.hasPrimaryFocus){
+              if (currentNode.focusedChild != null &&
+                  !currentNode.hasPrimaryFocus) {
                 FocusManager.instance.primaryFocus!.unfocus();
               }
             },
-            child:  DynamicTextFieldScreen(),
-          ),
-        ));
+            child: const DynamicTextFieldScreen(),
+          )),
+    );
   }
 }
