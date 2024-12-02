@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:project/check.dart';
+import 'package:project/NoteApp/provider/check.dart';
 import 'package:provider/provider.dart';
 
 class DynamicTextFieldScreen extends StatelessWidget {
@@ -13,7 +13,7 @@ class DynamicTextFieldScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Dynamic Text Fields with Checkbox'),
+        title: const Text('Note App'),
         backgroundColor: Colors.teal,
       ),
       body: Padding(
@@ -24,7 +24,9 @@ class DynamicTextFieldScreen extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Focus(
+                // ignore: deprecated_member_use
                 onKey: (FocusNode node, RawKeyEvent event) {
+                  // ignore: deprecated_member_use
                   if (event is RawKeyDownEvent) {
                     if (event.logicalKey == LogicalKeyboardKey.enter) {
                       textFieldProvider.addNewTextField(index);
@@ -50,8 +52,8 @@ class DynamicTextFieldScreen extends StatelessWidget {
                       child: TextField(
                         controller: textFieldProvider.controllers[index],
                         focusNode: textFieldProvider.focusNodes[index],
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                        decoration:  const InputDecoration(
+                          border: InputBorder.none,
                           hintText: 'Enter text here...',
                         ),
                         textInputAction: TextInputAction.newline,

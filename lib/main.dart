@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:project/NoteApp/NoteProvider.dart';
-import 'package:project/check.dart';
-import 'package:project/checklist.dart';
+
+import 'package:project/NoteApp/provider/check.dart';
+import 'package:project/NoteApp/checklist.dart';
 import 'package:project/provider/ExampleOneProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -17,9 +17,6 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => Exampleoneprovider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ExampleNoteProvider(),
         ),
         ChangeNotifierProvider(
           create: (_) => TextFieldProvider(),
