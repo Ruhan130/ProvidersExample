@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
                 FocusManager.instance.primaryFocus!.unfocus();
               }
             },
-            child: const DynamicTextFieldScreen(),
+            child:  DynamicTextFieldScreen(),
           )),
     );
   }
