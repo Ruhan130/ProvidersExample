@@ -13,7 +13,7 @@ class DynamicTextFieldScreen extends StatelessWidget {
     final textFieldProvider = Provider.of<TextFieldProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( 
         centerTitle: true,
         title: const Text('Note App'),
         backgroundColor: Colors.teal,
