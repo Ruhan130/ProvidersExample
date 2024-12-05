@@ -53,7 +53,7 @@ class _ImagpickerviewState extends State<Imagpickerview> {
                 decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
                 child: image != null
                     ? Image.file(image!.absolute)
-                    : Center(
+                    : const Center(
                         child: Icon(Icons.add_photo_alternate,size: 30,),
                       ),
               ),
@@ -66,7 +66,7 @@ class _ImagpickerviewState extends State<Imagpickerview> {
                 decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
                 child: image != null
                     ? Image.file(image!.absolute)
-                    : Center(
+                    : const Center(
                         child: Text("From Camera"),
                       ),
               ),
