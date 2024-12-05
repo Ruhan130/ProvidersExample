@@ -15,6 +15,7 @@ class TextFieldProvider with ChangeNotifier {
     _checkboxes.insert(index + 1, false);
     notifyListeners();
 
+    // Focus on the newly added textfield
     Future.delayed(Duration(milliseconds: 100), () {
       _focusNodes[index + 1].requestFocus();
     });
@@ -22,6 +23,7 @@ class TextFieldProvider with ChangeNotifier {
 
   void removeTextField(int index) {
     if (_controllers.length > 1) {
+      // Dispose controllers and focus nodes
       _controllers[index].dispose();
       _focusNodes[index].dispose();
       _controllers.removeAt(index);
@@ -29,15 +31,14 @@ class TextFieldProvider with ChangeNotifier {
       _checkboxes.removeAt(index);
       notifyListeners();
 
-      if (index > 0) {
-        Future.delayed(Duration(milliseconds: 100), () {
+      // Focus on the next textfield, or the previous one if it was the last
+      Future.delayed(Duration(milliseconds: 100), () {
+        if (index < _focusNodes.length) {
+          _focusNodes[index].requestFocus();
+        } else if (index - 1 >= 0) {
           _focusNodes[index - 1].requestFocus();
-        });
-      } else if (_focusNodes.isNotEmpty) {
-        Future.delayed(Duration(milliseconds: 100), () {
-          _focusNodes[0].requestFocus();
-        });
-      }
+        }
+      });
     }
   }
 
