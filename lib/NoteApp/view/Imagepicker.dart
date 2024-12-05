@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project/NoteApp/provider/imageProvider.dart';
+import 'package:provider/provider.dart';
 
 class Imagpickerview extends StatefulWidget {
   const Imagpickerview({super.key});
@@ -46,31 +48,88 @@ class _ImagpickerviewState extends State<Imagpickerview> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.deepPurple[100],
-      body: Center(
-        child: Stack(
-          children: [
-            image != null
-                ? CircleAvatar(
-                    radius: 100,
-                    backgroundImage: MemoryImage(image!),
-                  )
-                : CircleAvatar(
-                    radius: 100,
-                    backgroundImage: NetworkImage(
-                        'https://cdn-icons-png.flaticon.com/512/149/149071.png'),
+      body: ChangeNotifierProvider<Imageprovider>(
+        create: (context) => Imageprovider(),
+        child: Consumer<Imageprovider>(builder: (context, viewModel, child) {
+          return Center(
+            child: Stack(
+              children: [
+                image != null
+                    ? CircleAvatar(
+                        radius: 100,
+                        backgroundImage: MemoryImage(image!),
+                      )
+                    : const CircleAvatar(
+                        radius: 100,
+                        backgroundImage: NetworkImage(
+                            'https://cdn-icons-png.flaticon.com/512/149/149071.png'),
+                      ),
+                Positioned(
+                  bottom: -0,
+                  left: 140,
+                  child: IconButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (builder) {
+                          return SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height / 4,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () async {
+                                    var returnIamge = await ImagePicker().pickImage(source: ImageSource.camera);
+                                    if(returnIamge == null ) return;
+                                    viewModel.setImage(File(returnIamge.path));
+                                    },
+                                    child: const SizedBox(
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            Icons.image,
+                                            size: 70,
+                                          ),
+                                          Text("Camera"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () async {
+                                      var returnImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+                                      if(returnImage == null) return ;
+                                      viewModel.setImage(File(returnImage.path));
+                                    },
+                                    child: const SizedBox(
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            Icons.photo_size_select_large,
+                                            size: 70,
+                                          ),
+                                          Text("Gallery"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    icon: Icon(Icons.add_a_photo),
                   ),
-            Positioned(
-              bottom: -0,
-              left: 140,
-              child: IconButton(
-                onPressed: () {
-                  showImagePickerOption(BuildContext, context);
-                },
-                icon: Icon(Icons.add_a_photo),
-              ),
-            )
-          ],
-        ),
+                )
+              ],
+            ),
+          );
+        }),
       ),
     );
 
@@ -110,56 +169,7 @@ class _ImagpickerviewState extends State<Imagpickerview> {
     // );
   }
 
-  void showImagePickerOption(BuildContext, context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (builder) {
-          return SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height / 4,
-            child: Row(
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      pickImageFromgallery();
-                    },
-                    child: const SizedBox(
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.image,
-                            size: 70,
-                          ),
-                          Text("Camera"),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      pickImageFromCamera();
-                    },
-                    child: const SizedBox(
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.photo_size_select_large,
-                            size: 70,
-                          ),
-                          Text("Gallery"),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-  }
+  void showImagePickerOption(BuildContext, context) {}
 
 // THIS FUNCTION FOR PIC IMAGE FROM GALLERY
   Future pickImageFromgallery() async {
