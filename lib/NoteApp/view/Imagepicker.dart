@@ -2,8 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:project/NoteApp/provider/imageProvider.dart';
-import 'package:provider/provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Imagpickerview extends StatefulWidget {
   const Imagpickerview({super.key});
@@ -14,184 +13,117 @@ class Imagpickerview extends StatefulWidget {
 
 class _ImagpickerviewState extends State<Imagpickerview> {
   Uint8List? image;
-  File? imageFile;
-
-  // File? image;
-  // File? imageFile;
-  // final picker = ImagePicker();
-
-  // Future getImageGallery() async {
-  //   final pickerImage =
-  //       await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-  //   setState(() {
-  //     if (pickerImage != null) {
-  //       image = File(pickerImage.path);
-  //     } else {
-  //       print("No Image picked");
-  //     }
-  //   });
-  // }
-
-  // Future getImageFromCamera() async {
-  //   final pickerImage =
-  //       await picker.pickImage(source: ImageSource.camera, imageQuality: 80);
-  //   setState(() {
-  //     if (pickerImage != null) {
-  //       image = File(pickerImage.path);
-  //     } else {
-  //       print("No Image picked");
-  //     }
-  //   });
-  // }
+  final picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.deepPurple[100],
-      body: ChangeNotifierProvider<Imageprovider>(
-        create: (context) => Imageprovider(),
-        child: Consumer<Imageprovider>(builder: (context, viewModel, child) {
-          return Center(
-            child: Stack(
-              children: [
-                image != null
-                    ? CircleAvatar(
-                        radius: 100,
-                        backgroundImage: MemoryImage(image!),
-                      )
-                    : const CircleAvatar(
-                        radius: 100,
-                        backgroundImage: NetworkImage(
-                            'https://cdn-icons-png.flaticon.com/512/149/149071.png'),
-                      ),
-                Positioned(
-                  bottom: -0,
-                  left: 140,
-                  child: IconButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (builder) {
-                          return SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height / 4,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: InkWell(
-                                    onTap: () async {
-                                    var returnIamge = await ImagePicker().pickImage(source: ImageSource.camera);
-                                    if(returnIamge == null ) return;
-                                    viewModel.setImage(File(returnIamge.path));
-                                    },
-                                    child: const SizedBox(
-                                      child: Column(
-                                        children: [
-                                          Icon(
-                                            Icons.image,
-                                            size: 70,
-                                          ),
-                                          Text("Camera"),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: InkWell(
-                                    onTap: () async {
-                                      var returnImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-                                      if(returnImage == null) return ;
-                                      viewModel.setImage(File(returnImage.path));
-                                    },
-                                    child: const SizedBox(
-                                      child: Column(
-                                        children: [
-                                          Icon(
-                                            Icons.photo_size_select_large,
-                                            size: 70,
-                                          ),
-                                          Text("Gallery"),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    icon: Icon(Icons.add_a_photo),
-                  ),
-                )
-              ],
+      body: Center(
+        child: Stack(
+          children: [
+            // Display user-selected image or default avatar
+            CircleAvatar(
+              radius: 100,
+              backgroundImage: image != null
+                  ? MemoryImage(image!)
+                  : const NetworkImage(
+                      'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+                    ) as ImageProvider,
             ),
-          );
-        }),
+            // Add image button
+            Positioned(
+              bottom: 0,
+              left: 160,
+              child: IconButton(
+                onPressed: () async {
+                  Map<Permission, PermissionStatus> statues =
+                      await [Permission.storage, Permission.camera].request();
+                  if (statues[Permission.storage]!.isGranted &&
+                      statues[Permission.camera]!.isGranted) {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (builder) {
+                        return SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height / 4,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () async {
+                                    Navigator.pop(context); // Close modal
+                                    await _imgFromCamera();
+                                  },
+                                  child: const Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.camera_alt,
+                                        size: 70,
+                                      ),
+                                      Text("Camera"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () async {
+                                    Navigator.pop(context); // Close modal
+                                    await _imgFromGallery();
+                                  },
+                                  child: const Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.photo_library,
+                                        size: 70,
+                                      ),
+                                      Text("Gallery"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    print("Permissions not granted.");
+                  }
+                },
+                icon: const Icon(Icons.add_a_photo),
+              ),
+            ),
+          ],
+        ),
       ),
     );
-
-    // Scaffold(
-    //   body: Center(
-    //     child: Column(
-    //       children: [
-    //         InkWell(
-    //           onTap: getImageGallery,
-    //           child: Container(
-    //             height: 300,
-    //             width: 300,
-    //             decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-    //             child: image != null
-    //                 ? Image.file(image!.absolute)
-    //                 : const Center(
-    //                     child: Icon(Icons.add_photo_alternate,size: 30,),
-    //                   ),
-    //           ),
-    //         ),
-    //         InkWell(
-    //           onTap: getImageFromCamera,
-    //           child: Container(
-    //             height: 300,
-    //             width: 300,
-    //             decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-    //             child: image != null
-    //                 ? Image.file(image!.absolute)
-    //                 : const Center(
-    //                     child: Text("From Camera"),
-    //                   ),
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 
-  void showImagePickerOption(BuildContext, context) {}
-
-// THIS FUNCTION FOR PIC IMAGE FROM GALLERY
-  Future pickImageFromgallery() async {
-    final returnImage = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 80);
-    if (returnImage == null) return;
-    setState(() {
-      imageFile = File(returnImage.path);
-      image = File(returnImage.path).readAsBytesSync();
-      Navigator.pop(context);
-    });
+  Future<void> _imgFromGallery() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        image = File(pickedFile.path).readAsBytesSync();
+      });
+    }
   }
 
-  //  THIS FUNCTION FOR PIC IMAGE FROM CAMMERA
-  Future pickImageFromCamera() async {
-    final returnImage = await ImagePicker()
-        .pickImage(source: ImageSource.camera, imageQuality: 80);
-    if (returnImage == null) return;
-    setState(() {
-      imageFile = File(returnImage.path);
-      image = File(returnImage.path).readAsBytesSync();
-      Navigator.pop(context);
-    });
+  Future<void> _imgFromCamera() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 50,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        image = File(pickedFile.path).readAsBytesSync();
+      });
+    }
   }
 }
