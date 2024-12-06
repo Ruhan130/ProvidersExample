@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/CalenderApp/CalenderApp.dart';
 import 'package:project/NoteApp/provider/NoteappProvider.dart';
 import 'package:project/NoteApp/view/Imagepicker.dart';
 import 'package:project/NoteApp/view/NoteAppView.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
                 FocusManager.instance.primaryFocus!.unfocus();
               }
             },
-            child:  Imagpickerview(),
+            child:  CalenderApp(),
           )),
     );
   }
