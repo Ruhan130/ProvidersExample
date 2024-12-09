@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
                 FocusManager.instance.primaryFocus!.unfocus();
               }
             },
-            child:  Imagpickerview(),
+            child:  DynamicTextFieldScreen(),
           )),
     );
   }
