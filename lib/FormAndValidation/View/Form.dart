@@ -10,8 +10,8 @@ class FormAndValidations extends StatefulWidget {
 }
 
 class _FormAndValidationsState extends State<FormAndValidations> {
-  final _dronDownTextField = ["Small", "Medium", "Large", "Xsell"];
-  String? _showDropDownValue = "Small";
+  final _dronDownTextField = ["3-to-9", "9-to-16", "16-to25","25-to-50"];
+  String? _showDropDownValue ;
 
   TextEditingController mobileNumber = TextEditingController();
   bool _issPas = false;
@@ -264,7 +264,8 @@ class _FormAndValidationsState extends State<FormAndValidations> {
                   ),
                   dropdownColor: Colors.deepPurple[100],
                   decoration: const InputDecoration(
-                    labelText: 'DropDown Menu',
+                    labelText: 'Pick an Age',
+                    hintText: 'Insert Age',
                     labelStyle: TextStyle(color: Colors.black),
                     border: OutlineInputBorder(),
                   ),
