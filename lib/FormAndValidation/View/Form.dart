@@ -10,8 +10,8 @@ class FormAndValidations extends StatefulWidget {
 }
 
 class _FormAndValidationsState extends State<FormAndValidations> {
-  final _dronDownTextField = ["3-to-9", "9-to-16", "16-to25","25-to-50"];
-  String? _showDropDownValue ;
+  final _dronDownTextField = ["3-to-9", "9-to-16", "16-to25", "25-to-50"];
+  String? _showDropDownValue;
 
   TextEditingController mobileNumber = TextEditingController();
   bool _issPas = false;
@@ -20,14 +20,19 @@ class _FormAndValidationsState extends State<FormAndValidations> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? gender; // Gender validation
   String? genderError; // Error message for gender
+  String? checkboxError;
   bool checked = false;
+  String? dropDownError;
+  
 
   void _formValidate() {
     setState(() {
       genderError = null; // Reset error message before validation
+      checkboxError = null;
+      dropDownError = null;
     });
 
-    if (_formKey.currentState!.validate() && gender != null) {
+    if (_formKey.currentState!.validate() && gender != null && checked &&_showDropDownValue != null) {
       print("Form is valid");
       print("Gender: $gender");
       print("Checked: $checked");
@@ -36,6 +41,16 @@ class _FormAndValidationsState extends State<FormAndValidations> {
       if (gender == null) {
         setState(() {
           genderError = "Please select a gender"; // Set error message
+        });
+      }
+      if (!checked) {
+        setState(() {
+          checkboxError = "You must accept the terms"; // Set checkbox error
+        });
+      }
+       if (_showDropDownValue == null) {
+        setState(() {
+         dropDownError = "Please select an option from dropdown"; // Set dropdown error
         });
       }
     }
@@ -75,7 +90,6 @@ class _FormAndValidationsState extends State<FormAndValidations> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-   
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 205, 181, 249),
@@ -86,207 +100,235 @@ class _FormAndValidationsState extends State<FormAndValidations> {
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter a Username';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Enter Your Name",
-                    prefixIcon: Icon(Icons.person,color: Colors.deepPurple[400]),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+              TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please Enter a Username';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  hintText: "Enter Your Name",
+                  prefixIcon: Icon(Icons.person, color: Colors.deepPurple[400]),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: _checkEmail,
-                  decoration: InputDecoration(
-                    hintText: "Enter Your Email",
-                    prefixIcon:  Icon(Icons.email,color: Colors.deepPurple[400]),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+              ),
+              const SizedBox(height: 20.0),
+              TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: _checkEmail,
+                decoration: InputDecoration(
+                  hintText: "Enter Your Email",
+                  prefixIcon: Icon(Icons.email, color: Colors.deepPurple[400]),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  obscureText: _issPas,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: _pasValidate,
-                  decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () {
+              ),
+              const SizedBox(height: 20.0),
+              TextFormField(
+                obscureText: _issPas,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: _pasValidate,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _issPas = !_issPas;
+                        });
+                      },
+                      icon: _issPas
+                          ? const Icon(Icons.visibility)
+                          : const Icon(Icons.visibility_off)),
+                  hintText: "Enter Your Password",
+                  prefixIcon:
+                      Icon(Icons.password, color: Colors.deepPurple[400]),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              TextFormField(
+                obscureText: _isSecured,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: _pasValidate,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _isSecured = !_isSecured;
+                        });
+                      },
+                      icon: _isSecured
+                          ? const Icon(Icons.visibility)
+                          : const Icon(Icons.visibility_off)),
+                  hintText: "Confirm Password",
+                  prefixIcon:
+                      Icon(Icons.password, color: Colors.deepPurple[400]),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: mobileNumber,
+                keyboardType: TextInputType.number,
+                validator: _phoneValidate,
+                decoration: InputDecoration(
+                  hintText: "Enter Your Phone Number",
+                  prefixIcon: Icon(
+                    Icons.phone_outlined,
+                    color: Colors.deepPurple[400],
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RadioListTile(
+                        title: const Text("Male"),
+                        value: 'Male',
+                        groupValue: gender,
+                        onChanged: (value) {
                           setState(() {
-                            _issPas = !_issPas;
+                            gender = value.toString();
+                            genderError = null; // Clear error on selection
                           });
                         },
-                        icon: _issPas
-                            ? const Icon(Icons.visibility)
-                            : const Icon(Icons.visibility_off)),
-                    hintText: "Enter Your Password",
-                         prefixIcon:  Icon(Icons.password,color: Colors.deepPurple[400]),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  obscureText: _isSecured,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: _pasValidate,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _isSecured = !_isSecured;
-                          });
-                        },
-                        icon: _isSecured
-                            ? const Icon(Icons.visibility)
-                            : const Icon(Icons.visibility_off)),
-                    hintText: "Confirm Password",
-                      prefixIcon:  Icon(Icons.password,color: Colors.deepPurple[400]),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: mobileNumber,
-                  keyboardType: TextInputType.number,
-                  validator: _phoneValidate,
-                  decoration: InputDecoration(
-                    hintText: "Enter Your Phone Number",
-                      prefixIcon:  Icon(Icons.phone_outlined,color: Colors.deepPurple[400],),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RadioListTile(
-                      title: const Text("Male"),
-                      value: 'Male',
-                      groupValue: gender,
-                      onChanged: (value) {
-                        setState(() {
-                          gender = value.toString();
-                          genderError = null; // Clear error on selection
-                        });
-                      },
-                    ),
-                    RadioListTile(
-                      title: const Text("Female"),
-                      value: 'Female',
-                      groupValue: gender,
-                      onChanged: (value) {
-                        setState(() {
-                          gender = value.toString();
-                          genderError = null; // Clear error on selection
-                        });
-                      },
-                    ),
-                    RadioListTile(
-                      title: const Text("Other"),
-                      value: 'Other',
-                      groupValue: gender,
-                      onChanged: (value) {
-                        setState(() {
-                          gender = value.toString();
-                          genderError = null; // Clear error on selection
-                        });
-                      },
-                    ),
-                    if (genderError != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Text(
-                          genderError!,
-                          style: TextStyle(color: Colors.red, fontSize: 12),
-                        ),
                       ),
-                          CheckboxListTile(
-                  title: const Text("Visible Selected"),
-                  value: checked,
-                  onChanged: (value) {
-                    setState(() {
-                      checked = value!;
-                    });
-                  },
-                ),
-                checked == true
-                    ? Center(
-                      child: Text(
-                          "$gender",
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[800]),
+                      RadioListTile(
+                        title: const Text("Female"),
+                        value: 'Female',
+                        groupValue: gender,
+                        onChanged: (value) {
+                          setState(() {
+                            gender = value.toString();
+                            genderError = null; // Clear error on selection
+                          });
+                        },
+                      ),
+                      RadioListTile(
+                        title: const Text("Other"),
+                        value: 'Other',
+                        groupValue: gender,
+                        onChanged: (value) {
+                          setState(() {
+                            gender = value.toString();
+                            genderError = null; // Clear error on selection
+                          });
+                        },
+                      ),
+                      if (genderError != null)
+                        Text(
+                          genderError!,
+                          style: const TextStyle(color: Colors.red),
                         ),
-                    )
-                    : Container(),
-                const SizedBox(height: 10),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                DropdownButtonFormField(
-                  value: _showDropDownValue,
-                  items: _dronDownTextField
-                      .map(
-                        (e) => DropdownMenuItem(
-                          child: Text(e),
-                          value: e,
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: checked,
+                            onChanged: (value) {
+                              setState(() {
+                                checked = value!;
+                                checkboxError =
+                                    null; // Clear error on selection
+                              });
+                            },
+                          ),
+                          const SizedBox(width: 20),
+                          const Text(
+                            "Remember Me",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      if (checkboxError != null)
+                        Text(
+                          checkboxError!,
+                          style: const TextStyle(color: Colors.red),
                         ),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _showDropDownValue = value as String;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.deepPurple[300],
+                      const SizedBox(height: 10),
+                    ],
                   ),
-                  dropdownColor: Colors.deepPurple[100],
-                  decoration: const InputDecoration(
-                    labelText: 'Pick an Age',
-                    hintText: 'Insert Age',
-                    labelStyle: TextStyle(color: Colors.black),
-                    border: OutlineInputBorder(),
+                  const SizedBox(height: 10),
+                  DropdownButtonFormField(
+                    value: _showDropDownValue,
+                    items: _dronDownTextField
+                        .map(
+                          (e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _showDropDownValue = value as String;
+                        dropDownError = null ;
+                      });
+                    },
+                    icon: Icon(
+                      Icons.arrow_drop_down,
+                      color: Colors.deepPurple[300],
+                    ),
+                    dropdownColor: Colors.deepPurple[100],
+                    decoration: const InputDecoration(
+                      labelText: 'Pick an Age',
+                      hintText: 'Insert Age',
+                      labelStyle: TextStyle(color: Colors.black),
+                      border: OutlineInputBorder(),
+                    ),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                const SizedBox(
-                  height: 140,
-                ),
-                Container(
-                  height: 50,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
+                       if (dropDownError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      dropDownError!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
                   ),
-                  child: ElevatedButton(
-                    onPressed: _formValidate,
-                    child:  const Text("Submit",style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.blueGrey),),
+                  const SizedBox(
+                    height: 140,
                   ),
-                ),
-              ],
-            ),
+                  Container(
+                    height: 50,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: _formValidate,
+                      child: const Text(
+                        "Submit",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ]),
           ),
         ),
       ),
