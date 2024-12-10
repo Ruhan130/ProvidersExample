@@ -1,6 +1,8 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-
-import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class FormAndValidations extends StatefulWidget {
   const FormAndValidations({super.key});
@@ -23,16 +25,25 @@ class _FormAndValidationsState extends State<FormAndValidations> {
   String? checkboxError;
   bool checked = false;
   String? dropDownError;
-  
+
+  //  IMAGE PICKER FROM GALLERY
+  Uint8List? image;
+  final picker = ImagePicker();
+  String? imageError;
 
   void _formValidate() {
     setState(() {
       genderError = null; // Reset error message before validation
       checkboxError = null;
       dropDownError = null;
+      imageError = null;
     });
 
-    if (_formKey.currentState!.validate() && gender != null && checked &&_showDropDownValue != null) {
+    if (_formKey.currentState!.validate() &&
+        gender != null &&
+        checked &&
+        _showDropDownValue != null &&
+        image != null) {
       print("Form is valid");
       print("Gender: $gender");
       print("Checked: $checked");
@@ -48,9 +59,15 @@ class _FormAndValidationsState extends State<FormAndValidations> {
           checkboxError = "You must accept the terms"; // Set checkbox error
         });
       }
-       if (_showDropDownValue == null) {
+      if (_showDropDownValue == null) {
         setState(() {
-         dropDownError = "Please select an option from dropdown"; // Set dropdown error
+          dropDownError =
+              "Please select an option from dropdown"; // Set dropdown error
+        });
+      }
+      if (image == null) {
+        setState(() {
+          imageError = 'Please Select Image';
         });
       }
     }
@@ -92,246 +109,379 @@ class _FormAndValidationsState extends State<FormAndValidations> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 205, 181, 249),
-        title: const Text("Form And Validation"),
+        backgroundColor: const Color.fromARGB(255, 63, 60, 69),
+        title: const Text("Form And Validation",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please Enter a Username';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  hintText: "Enter Your Name",
-                  prefixIcon: Icon(Icons.person, color: Colors.deepPurple[400]),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please Enter a Username';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Enter Your Name",
+                    prefixIcon:
+                        Icon(Icons.person, color: Colors.black),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: _checkEmail,
-                decoration: InputDecoration(
-                  hintText: "Enter Your Email",
-                  prefixIcon: Icon(Icons.email, color: Colors.deepPurple[400]),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: _checkEmail,
+                  decoration: InputDecoration(
+                    hintText: "Enter Your Email",
+                    prefixIcon:
+                        Icon(Icons.email, color: Colors.black),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                obscureText: _issPas,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: _pasValidate,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                      onPressed: () {
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  obscureText: _issPas,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: _pasValidate,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _issPas = !_issPas;
+                          });
+                        },
+                        icon: _issPas
+                            ? const Icon(Icons.visibility)
+                            : const Icon(Icons.visibility_off)),
+                    hintText: "Enter Your Password",
+                    prefixIcon:
+                        Icon(Icons.password, color: Colors.black),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  obscureText: _isSecured,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: _pasValidate,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _isSecured = !_isSecured;
+                          });
+                        },
+                        icon: _isSecured
+                            ? const Icon(Icons.visibility)
+                            : const Icon(Icons.visibility_off)),
+                    hintText: "Confirm Password",
+                    prefixIcon:
+                        Icon(Icons.password, color: Colors.black),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: mobileNumber,
+                  keyboardType: TextInputType.number,
+                  validator: _phoneValidate,
+                  decoration: InputDecoration(
+                    hintText: "Enter Your Phone Number",
+                    prefixIcon: Icon(
+                      Icons.phone_outlined,
+                      color: Colors.black,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10.0),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RadioListTile(
+                          title: const Text("Male"),
+                          value: 'Male',
+                          groupValue: gender,
+                          onChanged: (value) {
+                            setState(() {
+                              gender = value.toString();
+                              genderError = null; // Clear error on selection
+                            });
+                          },
+                        ),
+                        RadioListTile(
+                          title: const Text("Female"),
+                          value: 'Female',
+                          groupValue: gender,
+                          onChanged: (value) {
+                            setState(() {
+                              gender = value.toString();
+                              genderError = null; // Clear error on selection
+                            });
+                          },
+                        ),
+                        RadioListTile(
+                          title: const Text("Other"),
+                          value: 'Other',
+                          groupValue: gender,
+                          onChanged: (value) {
+                            setState(() {
+                              gender = value.toString();
+                              genderError = null; // Clear error on selection
+                            });
+                          },
+                        ),
+                        if (genderError != null)
+                          Text(
+                            genderError!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: checked,
+                              onChanged: (value) {
+                                setState(() {
+                                  checked = value!;
+                                  checkboxError =
+                                      null; // Clear error on selection
+                                });
+                              },
+                            ),
+                            const SizedBox(width: 20),
+                            const Text(
+                              "Remember Me",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        if (checkboxError != null)
+                          Text(
+                            checkboxError!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    DropdownButtonFormField(
+                      value: _showDropDownValue,
+                      items: _dronDownTextField
+                          .map(
+                            (e) => DropdownMenuItem(
+                              child: Text(e),
+                              value: e,
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
                         setState(() {
-                          _issPas = !_issPas;
+                          _showDropDownValue = value as String;
+                          dropDownError = null;
                         });
                       },
-                      icon: _issPas
-                          ? const Icon(Icons.visibility)
-                          : const Icon(Icons.visibility_off)),
-                  hintText: "Enter Your Password",
-                  prefixIcon:
-                      Icon(Icons.password, color: Colors.deepPurple[400]),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                obscureText: _isSecured,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: _pasValidate,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _isSecured = !_isSecured;
-                        });
-                      },
-                      icon: _isSecured
-                          ? const Icon(Icons.visibility)
-                          : const Icon(Icons.visibility_off)),
-                  hintText: "Confirm Password",
-                  prefixIcon:
-                      Icon(Icons.password, color: Colors.deepPurple[400]),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: mobileNumber,
-                keyboardType: TextInputType.number,
-                validator: _phoneValidate,
-                decoration: InputDecoration(
-                  hintText: "Enter Your Phone Number",
-                  prefixIcon: Icon(
-                    Icons.phone_outlined,
-                    color: Colors.deepPurple[400],
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RadioListTile(
-                        title: const Text("Male"),
-                        value: 'Male',
-                        groupValue: gender,
-                        onChanged: (value) {
-                          setState(() {
-                            gender = value.toString();
-                            genderError = null; // Clear error on selection
-                          });
-                        },
+                      icon: Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.black,
                       ),
-                      RadioListTile(
-                        title: const Text("Female"),
-                        value: 'Female',
-                        groupValue: gender,
-                        onChanged: (value) {
-                          setState(() {
-                            gender = value.toString();
-                            genderError = null; // Clear error on selection
-                          });
-                        },
+                      dropdownColor: Colors.deepPurple[100],
+                      decoration: const InputDecoration(
+                        labelText: 'Pick an Age',
+                        hintText: 'Insert Age',
+                        labelStyle: TextStyle(color: Colors.black),
+                        border: OutlineInputBorder(),
                       ),
-                      RadioListTile(
-                        title: const Text("Other"),
-                        value: 'Other',
-                        groupValue: gender,
-                        onChanged: (value) {
-                          setState(() {
-                            gender = value.toString();
-                            genderError = null; // Clear error on selection
-                          });
-                        },
-                      ),
-                      if (genderError != null)
-                        Text(
-                          genderError!,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    if (dropDownError != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          dropDownError!,
                           style: const TextStyle(color: Colors.red),
                         ),
-                      SizedBox(
-                        height: 20,
                       ),
-                      Row(
+                    const SizedBox(
+                      height: 0,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Center(
+                      child: Stack(
                         children: [
-                          Checkbox(
-                            value: checked,
-                            onChanged: (value) {
-                              setState(() {
-                                checked = value!;
-                                checkboxError =
-                                    null; // Clear error on selection
-                              });
-                            },
+                          // Display user-selected image or default avatar
+                          CircleAvatar(
+                            radius: 80,
+                             // Reduced radius for smaller height
+                            backgroundImage: image != null
+                                ? MemoryImage(image!)
+                                : const NetworkImage(
+                                    'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+                                  ) as ImageProvider,
                           ),
-                          const SizedBox(width: 20),
-                          const Text(
-                            "Remember Me",
-                            style: TextStyle(fontSize: 18),
+                          // Add image button
+                          Positioned(
+                            bottom:
+                                5, // Adjusted position closer to CircleAvatar
+                            left: 120, // Adjusted for new CircleAvatar size
+                            child: IconButton(
+                              onPressed: () async {
+                                Map<Permission, PermissionStatus> statues =
+                                    await [
+                                  Permission.storage,
+                                  Permission.camera
+                                ].request();
+                                if (statues[Permission.storage]!.isGranted &&
+                                    statues[Permission.camera]!.isGranted) {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (builder) {
+                                      return SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                4,
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  Navigator.pop(
+                                                      context); // Close modal
+                                                  await _imgFromCamera();
+                                                },
+                                                child: const Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.camera_alt,
+                                                      size: 70,
+                                                    ),
+                                                    Text("Camera"),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  Navigator.pop(
+                                                      context); // Close modal
+                                                  await _imgFromGallery();
+                                                },
+                                                child: const Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.photo_library,
+                                                      size: 70,
+                                                    ),
+                                                    Text("Gallery"),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  print("Permissions not granted.");
+                                }
+                              },
+                              icon: const Icon(Icons.add_a_photo),
+                            ),
                           ),
                         ],
                       ),
-                      if (checkboxError != null)
-                        Text(
-                          checkboxError!,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  DropdownButtonFormField(
-                    value: _showDropDownValue,
-                    items: _dronDownTextField
-                        .map(
-                          (e) => DropdownMenuItem(
-                            child: Text(e),
-                            value: e,
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _showDropDownValue = value as String;
-                        dropDownError = null ;
-                      });
-                    },
-                    icon: Icon(
-                      Icons.arrow_drop_down,
-                      color: Colors.deepPurple[300],
                     ),
-                    dropdownColor: Colors.deepPurple[100],
-                    decoration: const InputDecoration(
-                      labelText: 'Pick an Age',
-                      hintText: 'Insert Age',
-                      labelStyle: TextStyle(color: Colors.black),
-                      border: OutlineInputBorder(),
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                       if (dropDownError != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      dropDownError!,
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 140,
-                  ),
-                  Container(
-                    height: 50,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: _formValidate,
-                      child: const Text(
-                        "Submit",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ]),
+
+                    //  VALIDATION IMAGE IMAGE IS NOT SELECTED
+                    if (imageError != null)
+                      Text(
+                        imageError!,
+                        style: const TextStyle(color: Colors.red),
+                      )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: Expanded(
+        child: Container(
+          height: 50,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.black,
+          ),
+          child: TextButton(
+            onPressed: _formValidate,
+            child: const Text(
+              "SUBMIT",
+              style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _imgFromGallery() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        image = File(pickedFile.path).readAsBytesSync();
+      });
+    }
+  }
+
+  Future<void> _imgFromCamera() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 50,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        image = File(pickedFile.path).readAsBytesSync();
+      });
+    }
   }
 }
