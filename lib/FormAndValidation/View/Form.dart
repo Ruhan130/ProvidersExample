@@ -16,7 +16,7 @@ class _FormAndValidationsState extends State<FormAndValidations> {
   String? _showDropDownValue;
 
   TextEditingController mobileNumber = TextEditingController();
-  bool _issPas = false;
+  bool _issPas = true;
   bool _isSecured = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -47,6 +47,8 @@ class _FormAndValidationsState extends State<FormAndValidations> {
       print("Form is valid");
       print("Gender: $gender");
       print("Checked: $checked");
+      print("Checked: $_showDropDownValue");
+      print("Image: $image");
       // Proceed with form submission
     } else {
       if (gender == null) {
@@ -100,6 +102,15 @@ class _FormAndValidationsState extends State<FormAndValidations> {
     }
     if (value.length <= 5) {
       return 'Password must be greater than 5 characters';
+    }
+    return null;
+  }
+    String? _pasConformValidate(value) {
+    if (value!.isEmpty) {
+      return 'Please Enter Same Password';
+    }
+    if (value.length <= 5) {
+      return 'Please Enter Same Password';
     }
     return null;
   }
@@ -177,7 +188,7 @@ class _FormAndValidationsState extends State<FormAndValidations> {
                 TextFormField(
                   obscureText: _isSecured,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: _pasValidate,
+                  validator: _pasConformValidate,
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
                         onPressed: () {
@@ -275,7 +286,7 @@ class _FormAndValidationsState extends State<FormAndValidations> {
                             ),
                             const SizedBox(width: 20),
                             const Text(
-                              "Remember Me",
+                              "Terms And Conditions",
                               style: TextStyle(fontSize: 18),
                             ),
                           ],
